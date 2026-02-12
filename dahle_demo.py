@@ -19,7 +19,7 @@ if 'step' not in st.session_state:
 if 'temp_order' not in st.session_state:
     st.session_state.temp_order = {}
 
-# --- 3. CSS STYLING ---
+# --- 3. CSS STYLING (De "Transparante Laag" Methode) ---
 st.markdown("""
     <style>
     /* IMPORT FONT (Montserrat) */
@@ -29,48 +29,47 @@ st.markdown("""
         font-family: 'Montserrat', sans-serif;
     }
 
-    /* --- DE SIDEBAR KNOP HERSTELLEN --- */
+    /* --- CRUCIALE FIX VOOR DE KNOP --- */
     
-    /* 1. We maken de header NIET onzichtbaar, maar transparant. 
-       Hierdoor blijft het knopje linksboven bestaan. */
-    header {
-        visibility: visible !important;
-        background-color: transparent !important;
+    /* 1. We laten de header BESTAAN (niet 'none'), maar maken hem onzichtbaar */
+    header[data-testid="stHeader"] {
+        background: transparent !important;
+        color: transparent !important;
     }
     
-    [data-testid="stHeader"] {
-        background-color: transparent !important;
-        z-index: 100000; /* Zorg dat de header bovenop de navbar ligt */
+    /* 2. We zorgen dat de decoratie (regenboogstreep) weg is */
+    div[data-testid="stDecoration"] {
+        display: none;
     }
 
-    /* 2. We verbergen de elementen die we NIET willen zien (zoals de streep en het menu rechts) */
-    [data-testid="stDecoration"] { display: none; }
-    [data-testid="stToolbar"] { display: none; }
+    /* 3. We verbergen de knoppen rechts (Share/Deploy) specifiek */
+    div[data-testid="stToolbar"] {
+        visibility: hidden;
+    }
+    div[data-testid="stStatusWidget"] {
+        visibility: hidden;
+    }
 
-    /* 3. We stylen het knopje (het pijltje) zodat het duidelijk zichtbaar is */
-    [data-testid="stSidebarCollapsedControl"] {
-        display: block !important;
-        color: #333 !important; /* Donkere kleur */
+    /* 4. MAAR: De sidebar-knop linksboven maken we zichtbaar en stylen we */
+    button[kind="header"] {
         background-color: white !important; /* Wit blokje */
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 5px;
-        margin-top: 10px; /* Beetje naar beneden duwen */
-        margin-left: 20px;
-    }
-    
-    /* Hover effect voor het knopje */
-    [data-testid="stSidebarCollapsedControl"]:hover {
-        color: #9b59b6 !important; /* Paars */
-        border-color: #9b59b6;
+        border: 1px solid #ddd !important;
+        color: #333 !important; /* Donker icoon */
+        border-radius: 8px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        margin-top: 10px; /* Iets naar beneden */
+        height: 40px;
+        width: 40px;
+        z-index: 999999; /* Bovenop alles! */
     }
 
     /* Verberg footer */
     footer {visibility: hidden;}
     
-    /* PUSH CONTENT DOWN */
+    /* PUSH CONTENT DOWN (Ruimte voor de navbar) */
     .block-container {
-        padding-top: 160px !important;
+        padding-top: 150px !important;
         padding-bottom: 5rem;
     }
     
@@ -81,7 +80,7 @@ st.markdown("""
         left: 0;
         width: 100%;
         height: 120px;
-        z-index: 9999; /* Net EEN LAAG LAGER dan de header (zodat knopje klikbaar is) */
+        z-index: 1000; /* Lager dan de header knop */
         
         background-color: #ffffff;
         padding: 0px 50px;
@@ -98,7 +97,7 @@ st.markdown("""
     .nav-logo img {
         height: 65px;
         margin-top: 0px;
-        margin-left: 60px; /* Ruimte maken voor de sidebar knop! */
+        margin-left: 60px; /* Ruimte voor de sidebar knop */
     }
     
     /* LINKS */
@@ -188,7 +187,7 @@ st.markdown("""
 # --- 4. CONTROLS (Sidebar) ---
 with st.sidebar:
     st.header("⚙️ Admin Controls")
-    st.info("Klik hieronder om te wisselen tussen de Website en het Planner Systeem.")
+    st.info("Hier kun je schakelen tussen de website en het planner systeem.")
     
     mode = st.radio("Kies Scherm:", ["🌐 Customer Website", "🔒 Internal Planner System"])
     
