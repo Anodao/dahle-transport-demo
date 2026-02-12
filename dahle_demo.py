@@ -3,7 +3,7 @@ import pandas as pd
 import time
 from datetime import datetime
 
-# --- 1. PAGE CONFIG (Must be first) ---
+# --- 1. PAGE CONFIG (Moet altijd als eerste) ---
 st.set_page_config(
     page_title="Dahle Transport", 
     page_icon="🚚", 
@@ -19,36 +19,35 @@ if 'step' not in st.session_state:
 if 'temp_order' not in st.session_state:
     st.session_state.temp_order = {}
 
-# --- 3. ADVANCED CSS (The "Real Website" Look) ---
+# --- 3. ADVANCED CSS (Stijl van de website) ---
 st.markdown("""
     <style>
-    /* IMPORT FONT similar to Dahle website (Montserrat) */
+    /* IMPORT FONT (Montserrat) */
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;800&display=swap');
 
-    /* APPLY FONT GLOBALLY */
+    /* ALGEMEEN FONT */
     html, body, [class*="css"] {
         font-family: 'Montserrat', sans-serif;
     }
 
-    /* --- HIDE STREAMLIT DEFAULT UI ELEMENTS (The Fix) --- */
+    /* VERBERG STREAMLIT ELEMENTEN (Header, Footer, Menu) */
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
     [data-testid="stHeader"] { display: none; }
     [data-testid="stToolbar"] { display: none; }
     
-    /* REMOVE DEFAULT PADDING TO FLUSH NAVBAR TO TOP */
+    /* NAVIGATIEBALK BOVENAAN */
     .block-container {
         padding-top: 0rem !important;
         padding-bottom: 5rem;
     }
     
-    /* CUSTOM NAVIGATION BAR */
     .navbar {
         background-color: #1a1a1a;
-        padding: 15px 20px;
+        padding: 15px 40px;
         border-bottom: 1px solid #333;
-        margin-bottom: 30px;
+        margin-bottom: 40px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -59,45 +58,40 @@ st.markdown("""
         color: white;
         text-transform: italic;
     }
-    .nav-logo span { color: #9b59b6; } /* Purple Accent */
+    .nav-logo span { color: #9b59b6; }
     
     .nav-links {
         font-size: 14px;
         font-weight: 600;
         color: #ddd;
         display: flex;
-        gap: 20px;
+        gap: 30px;
     }
-    .nav-links span { cursor: pointer; }
+    .nav-links span { cursor: pointer; transition: 0.2s; }
     .nav-links span:hover { color: #9b59b6; }
     
     .nav-btn {
         background-color: #9b59b6;
         color: white;
-        padding: 8px 20px;
-        border-radius: 20px;
+        padding: 10px 25px;
+        border-radius: 25px;
         text-decoration: none;
         font-weight: bold;
         font-size: 14px;
         cursor: pointer;
     }
 
-    /* HERO SECTION TEXT */
+    /* HERO TEXT (Slogan) */
     .hero-title {
-        font-size: 3.5rem;
+        font-size: 4rem;
         font-weight: 800;
         color: white;
-        line-height: 1.2;
-        margin-bottom: 10px;
-        margin-top: 20px;
-    }
-    .hero-subtitle {
-        font-size: 1.2rem;
-        color: #cccccc;
-        margin-bottom: 30px;
+        line-height: 1.1;
+        margin-top: 40px;
+        margin-bottom: 20px;
     }
 
-    /* CUSTOM CARDS (DHL STYLE) */
+    /* KAARTEN STIJL */
     .option-card {
         background-color: #262626;
         border: 2px solid #333;
@@ -121,9 +115,9 @@ st.markdown("""
     .card-title { font-size: 18px; font-weight: 700; color: white; margin-bottom: 10px; }
     .card-desc { font-size: 13px; color: #aaa; }
 
-    /* BUTTON OVERRIDES */
+    /* KNOPPEN STIJL */
     div.stButton > button {
-        background-color: #9b59b6; /* Dahle Purple */
+        background-color: #9b59b6;
         color: white;
         border-radius: 30px;
         padding: 12px 28px;
@@ -137,7 +131,7 @@ st.markdown("""
         color: white;
     }
     
-    /* INPUT FIELDS DARK MODE */
+    /* INPUT VELDEN DONKER */
     div[data-baseweb="input"] { background-color: #333; border-radius: 8px; }
     div[data-baseweb="input"] input { color: white; }
     label { color: #ccc !important; font-weight: 600; }
@@ -157,8 +151,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- 4. MODE SELECTION (SIDEBAR) ---
-# This hides the "Planner" logic from the main view to make it look like a real site
+# --- 4. VIEW MODE SELECTIE (Verborgen in Sidebar) ---
 with st.sidebar:
     st.header("⚙️ Demo Controls")
     mode = st.radio("View Mode:", ["🌐 Customer Website", "🔒 Internal Planner System"])
@@ -169,22 +162,19 @@ with st.sidebar:
         st.rerun()
 
 # =========================================================
-# VIEW 1: CUSTOMER WEBSITE (The "Real" Look)
+# VIEW 1: CUSTOMER WEBSITE (Schoon & Strak)
 # =========================================================
 if mode == "🌐 Customer Website":
     
-    # --- HERO SECTION ---
-    c_hero1, c_hero2 = st.columns([1.5, 1])
+    # --- HERO SECTION (Zonder openingstijden/extra tekst) ---
+    c_hero1, c_hero2 = st.columns([1.2, 1])
     
     with c_hero1:
+        # Alleen de grote slogan
         st.markdown('<div class="hero-title">We get it done!</div>', unsafe_allow_html=True)
-        st.markdown('<div class="hero-subtitle">Fast and secure transport, regardless of distance.<br>Courier services Express all over Europe.</div>', unsafe_allow_html=True)
-        
-        # Opening hours styled box
-        st.info("🕒 **Opening hours:** Monday-Friday: 07:00–16:00")
+        # Hier is de "0" en de extra tekst verwijderd
 
     with c_hero2:
-        # Truck Image
         st.image("https://cdn.pixabay.com/photo/2017/10/04/17/23/truck-2816898_1280.jpg", use_container_width=True)
 
     st.markdown("---")
@@ -192,13 +182,12 @@ if mode == "🌐 Customer Website":
     # --- WIZARD SECTION ---
     st.markdown("### 📦 Create new shipment")
     
-    # STEP 1: CARD SELECTION
+    # STEP 1: KIES TYPE (KAARTEN)
     if st.session_state.step == 1:
         st.write("Select the type of goods you want to ship:")
         
         col_a, col_b, col_c = st.columns(3)
         
-        # We use buttons inside columns to simulate clickable cards
         with col_a:
             st.markdown("""
             <div class="option-card">
@@ -238,7 +227,7 @@ if mode == "🌐 Customer Website":
                 st.session_state.step = 2
                 st.rerun()
 
-    # STEP 2: DETAILS FORM
+    # STEP 2: INVUL FORMULIER
     elif st.session_state.step == 2:
         st.markdown(f"#### Details for: **{st.session_state.selected_type}**")
         
@@ -277,7 +266,7 @@ if mode == "🌐 Customer Website":
                 else:
                     st.error("Please fill in Company Name and Email.")
 
-    # STEP 3: CONFIRMATION
+    # STEP 3: BEVESTIGING
     elif st.session_state.step == 3:
         st.markdown("#### Review your request")
         o = st.session_state.temp_order
@@ -299,7 +288,7 @@ if mode == "🌐 Customer Website":
                 st.rerun()
         with c_b2:
             if st.button("✅ CONFIRM & SEND REQUEST"):
-                # Save to "Database"
+                # "Database" opslaan
                 final_order = o.copy()
                 final_order['id'] = len(st.session_state.orders) + 1001
                 final_order['date'] = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -328,7 +317,6 @@ elif mode == "🔒 Internal Planner System":
             st.info("No new orders received.")
         
         for order in reversed(st.session_state.orders):
-            # Status colors
             status_icon = "🔴" if order['status'] == "New" else "🟢"
             
             with st.container(border=True):
