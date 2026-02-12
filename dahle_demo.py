@@ -30,16 +30,23 @@ st.markdown("""
         font-family: 'Montserrat', sans-serif;
     }
 
-    /* REMOVE DEFAULT STREAMLIT PADDING */
+    /* --- HIDE STREAMLIT DEFAULT UI ELEMENTS (The Fix) --- */
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    [data-testid="stHeader"] { display: none; }
+    [data-testid="stToolbar"] { display: none; }
+    
+    /* REMOVE DEFAULT PADDING TO FLUSH NAVBAR TO TOP */
     .block-container {
-        padding-top: 1rem;
+        padding-top: 0rem !important;
         padding-bottom: 5rem;
     }
     
     /* CUSTOM NAVIGATION BAR */
     .navbar {
         background-color: #1a1a1a;
-        padding: 15px 0px;
+        padding: 15px 20px;
         border-bottom: 1px solid #333;
         margin-bottom: 30px;
         display: flex;
@@ -58,8 +65,10 @@ st.markdown("""
         font-size: 14px;
         font-weight: 600;
         color: #ddd;
+        display: flex;
+        gap: 20px;
     }
-    .nav-links span { margin-left: 20px; cursor: pointer; }
+    .nav-links span { cursor: pointer; }
     .nav-links span:hover { color: #9b59b6; }
     
     .nav-btn {
@@ -70,6 +79,7 @@ st.markdown("""
         text-decoration: none;
         font-weight: bold;
         font-size: 14px;
+        cursor: pointer;
     }
 
     /* HERO SECTION TEXT */
@@ -79,6 +89,7 @@ st.markdown("""
         color: white;
         line-height: 1.2;
         margin-bottom: 10px;
+        margin-top: 20px;
     }
     .hero-subtitle {
         font-size: 1.2rem;
@@ -96,6 +107,10 @@ st.markdown("""
         transition: 0.3s;
         cursor: pointer;
         height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
     .option-card:hover {
         border-color: #9b59b6;
