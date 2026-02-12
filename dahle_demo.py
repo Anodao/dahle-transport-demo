@@ -29,50 +29,43 @@ st.markdown("""
         font-family: 'Montserrat', sans-serif;
     }
 
-    /* --- DE "ADMIN MENU" KNOP FIX --- */
+    /* --- DE SIDEBAR KNOP HERSTELLEN --- */
     
-    /* We stylen de standaard Streamlit 'sidebar toggle' (het pijltje)
-       zodat het lijkt op een opvallende admin knop */
-    
-    [data-testid="stSidebarCollapsedControl"] {
-        position: fixed;
-        left: 20px;
-        top: 20px;
-        z-index: 100001; /* Bovenop alles, ook boven de navbar */
-        
-        background-color: #333;
-        color: white;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        border: 2px solid #ffffff;
-        
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    /* 1. We maken de header NIET onzichtbaar, maar transparant. 
+       Hierdoor blijft het knopje linksboven bestaan. */
+    header {
+        visibility: visible !important;
+        background-color: transparent !important;
     }
     
-    [data-testid="stSidebarCollapsedControl"]:hover {
-        background-color: #9b59b6; /* Paars bij hover */
-        transform: scale(1.1);
-    }
-    
-    /* Zorg dat het pijltje binnenin wit is */
-    [data-testid="stSidebarCollapsedControl"] svg {
-        fill: white !important;
-        color: white !important;
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+        z-index: 100000; /* Zorg dat de header bovenop de navbar ligt */
     }
 
-    /* --- OVERIGE VERBERGEN --- */
-    
-    /* Verberg toolbar rechtsboven */
-    [data-testid="stToolbar"] { display: none !important; }
-    /* Verberg decoratie balk */
+    /* 2. We verbergen de elementen die we NIET willen zien (zoals de streep en het menu rechts) */
     [data-testid="stDecoration"] { display: none; }
-    /* Header transparant maken zodat de knop werkt */
-    [data-testid="stHeader"] { background-color: transparent !important; }
-    /* Footer weg */
+    [data-testid="stToolbar"] { display: none; }
+
+    /* 3. We stylen het knopje (het pijltje) zodat het duidelijk zichtbaar is */
+    [data-testid="stSidebarCollapsedControl"] {
+        display: block !important;
+        color: #333 !important; /* Donkere kleur */
+        background-color: white !important; /* Wit blokje */
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 5px;
+        margin-top: 10px; /* Beetje naar beneden duwen */
+        margin-left: 20px;
+    }
+    
+    /* Hover effect voor het knopje */
+    [data-testid="stSidebarCollapsedControl"]:hover {
+        color: #9b59b6 !important; /* Paars */
+        border-color: #9b59b6;
+    }
+
+    /* Verberg footer */
     footer {visibility: hidden;}
     
     /* PUSH CONTENT DOWN */
@@ -88,7 +81,7 @@ st.markdown("""
         left: 0;
         width: 100%;
         height: 120px;
-        z-index: 9999;
+        z-index: 9999; /* Net EEN LAAG LAGER dan de header (zodat knopje klikbaar is) */
         
         background-color: #ffffff;
         padding: 0px 50px;
@@ -105,8 +98,7 @@ st.markdown("""
     .nav-logo img {
         height: 65px;
         margin-top: 0px;
-        /* Schuif logo iets naar rechts zodat het niet onder de admin knop zit */
-        margin-left: 50px; 
+        margin-left: 60px; /* Ruimte maken voor de sidebar knop! */
     }
     
     /* LINKS */
