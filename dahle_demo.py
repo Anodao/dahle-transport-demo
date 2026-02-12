@@ -19,7 +19,7 @@ if 'step' not in st.session_state:
 if 'temp_order' not in st.session_state:
     st.session_state.temp_order = {}
 
-# --- 3. CSS STYLING (Met het ECHTE Logo) ---
+# --- 3. CSS STYLING (Met jouw link) ---
 st.markdown("""
     <style>
     /* IMPORT FONT (Montserrat) */
@@ -63,7 +63,7 @@ st.markdown("""
     
     /* LOGO STYLING */
     .nav-logo img {
-        height: 45px; /* Pas aan indien nodig */
+        height: 50px; /* Mooi formaat voor in de balk */
         margin-top: 5px;
     }
     
@@ -136,7 +136,7 @@ st.markdown("""
     
     <div class="navbar">
         <div class="nav-logo">
-            <img src="https://cloud-ide12d.becdn.net/media/original/964295c9aae86959c99ea3e692f8bb4d6b78062c2be/logo-website-top-png-1-.webp" alt="Dahle Transport Logo">
+            <img src="https://cloud-1de12d.becdn.net/media/original/964295c9ae8e693f8bb4d6b70862c2be/logo-website-top-png-1-.webp" alt="Dahle Transport Logo">
         </div>
         <div class="nav-links">
             <span>Home</span>
