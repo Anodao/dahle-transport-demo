@@ -19,68 +19,54 @@ if 'step' not in st.session_state:
 if 'temp_order' not in st.session_state:
     st.session_state.temp_order = {}
 
-# --- 3. CSS STYLING (De "Transparante Laag" Methode) ---
+# --- 3. CSS STYLING (De Gelaagde Fix) ---
 st.markdown("""
     <style>
-    /* IMPORT FONT (Montserrat) */
+    /* IMPORT FONT */
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap');
 
     html, body, [class*="css"] {
         font-family: 'Montserrat', sans-serif;
     }
 
-    /* --- CRUCIALE FIX VOOR DE KNOP --- */
+    /* --- DE MENU KNOP FIX (Hier zit de magie) --- */
     
-    /* 1. We laten de header BESTAAN (niet 'none'), maar maken hem onzichtbaar */
+    /* 1. De Header container bovenop leggen en transparant maken */
     header[data-testid="stHeader"] {
         background: transparent !important;
-        color: transparent !important;
+        z-index: 10000 !important; /* Hoger dan de navbar */
+        height: 100px; /* Zelfde hoogte als navbar */
+        pointer-events: none; /* Laat muisklikken door naar de navbar eronder */
+    }
+
+    /* 2. MAAR: De knoppen in de header moeten WEL klikbaar zijn */
+    header[data-testid="stHeader"] button {
+        pointer-events: auto !important; /* Heractiveer klikken voor de knop */
+        color: #333 !important; /* Maak het icoontje donkergrijs */
+        background-color: transparent !important;
     }
     
-    /* 2. We zorgen dat de decoratie (regenboogstreep) weg is */
-    div[data-testid="stDecoration"] {
-        display: none;
-    }
+    /* 3. Verberg de dingen die we echt niet willen zien */
+    [data-testid="stToolbar"] { display: none !important; } /* Share knoppen weg */
+    [data-testid="stDecoration"] { display: none !important; } /* Regenbooglijn weg */
+    div[data-testid="stStatusWidget"] { visibility: hidden; } /* 'Running' mannetje weg */
+    footer { visibility: hidden; }
 
-    /* 3. We verbergen de knoppen rechts (Share/Deploy) specifiek */
-    div[data-testid="stToolbar"] {
-        visibility: hidden;
-    }
-    div[data-testid="stStatusWidget"] {
-        visibility: hidden;
-    }
-
-    /* 4. MAAR: De sidebar-knop linksboven maken we zichtbaar en stylen we */
-    button[kind="header"] {
-        background-color: white !important; /* Wit blokje */
-        border: 1px solid #ddd !important;
-        color: #333 !important; /* Donker icoon */
-        border-radius: 8px !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        margin-top: 10px; /* Iets naar beneden */
-        height: 40px;
-        width: 40px;
-        z-index: 999999; /* Bovenop alles! */
-    }
-
-    /* Verberg footer */
-    footer {visibility: hidden;}
+    /* --- NAVBAR STYLING --- */
     
-    /* PUSH CONTENT DOWN (Ruimte voor de navbar) */
+    /* Content naar beneden duwen */
     .block-container {
         padding-top: 150px !important;
         padding-bottom: 5rem;
     }
     
-    /* --- NAVBAR --- */
     .navbar {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 120px;
-        z-index: 1000; /* Lager dan de header knop */
+        z-index: 1000; /* Lager dan de header, zodat menu erboven zweeft */
         
         background-color: #ffffff;
         padding: 0px 50px;
@@ -97,10 +83,11 @@ st.markdown("""
     .nav-logo img {
         height: 65px;
         margin-top: 0px;
-        margin-left: 60px; /* Ruimte voor de sidebar knop */
+        /* We schuiven het logo naar rechts zodat het niet onder het menu knopje zit */
+        margin-left: 50px; 
     }
     
-    /* LINKS */
+    /* NAVIGATIE LINKJES */
     .nav-links {
         font-size: 16px;
         font-weight: 600;
@@ -187,9 +174,9 @@ st.markdown("""
 # --- 4. CONTROLS (Sidebar) ---
 with st.sidebar:
     st.header("⚙️ Admin Controls")
-    st.info("Hier kun je schakelen tussen de website en het planner systeem.")
+    st.write("Wissel hier van scherm:")
     
-    mode = st.radio("Kies Scherm:", ["🌐 Customer Website", "🔒 Internal Planner System"])
+    mode = st.radio("Modus:", ["🌐 Customer Website", "🔒 Internal Planner System"])
     
     st.divider()
     if st.button("Reset Demo Data"):
