@@ -8,7 +8,7 @@ st.set_page_config(
     page_title="Dahle Transport", 
     page_icon="🚚", 
     layout="wide",
-    initial_sidebar_state="collapsed" # Hij start dicht
+    initial_sidebar_state="collapsed"
 )
 
 # --- 2. SESSION STATE ---
@@ -19,7 +19,7 @@ if 'step' not in st.session_state:
 if 'temp_order' not in st.session_state:
     st.session_state.temp_order = {}
 
-# --- 3. CSS STYLING (Met Admin Knop Fix) ---
+# --- 3. CSS STYLING (FINAL FIX: Toolbar weg, Menu blijft) ---
 st.markdown("""
     <style>
     /* IMPORT FONT (Montserrat) */
@@ -29,52 +29,53 @@ st.markdown("""
         font-family: 'Montserrat', sans-serif;
     }
 
-    /* --- HEADER FIX (Zorgt dat je de sidebar weer kunt openen) --- */
+    /* --- DE OPLOSSING VOOR DE KNOPPEN --- */
     
-    /* We maken de header transparant in plaats van onzichtbaar */
-    header[data-testid="stHeader"] {
-        background-color: transparent !important;
-        z-index: 100000; /* Zorg dat dit BOVEN de witte navbar ligt */
+    /* 1. Verberg SPECIFIEK de toolbar rechtsboven (Share, Star, etc.) */
+    [data-testid="stToolbar"] {
+        display: none !important;
     }
     
-    /* Verberg de gekleurde streep en 'running man' icoontjes */
-    div[data-testid="stDecoration"] { display: none; }
-    div[data-testid="stStatusWidget"] { visibility: hidden; }
+    /* 2. Verberg de gekleurde streep bovenin */
+    [data-testid="stDecoration"] {
+        display: none;
+    }
+    
+    /* 3. Maak de header container transparant (zodat je onze witte balk ziet) */
+    /* Maar laat hem wel bestaan, zodat de menu-knop (hamburger) erin blijft werken */
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+        z-index: 10000; /* Zorg dat het menu-knopje bovenop ligt */
+    }
 
-    /* Stijl de Sidebar-Toggle knop (pijltje linksboven) */
+    /* 4. Zorg dat het menu-knopje zichtbaar is (donkergrijs) */
     button[kind="header"] {
-        color: #333 !important; /* Donkergrijs */
+        color: #333 !important;
         background-color: transparent !important;
-        font-weight: bold;
     }
-    /* Als je eroverheen muist */
-    button[kind="header"]:hover {
-        color: #9b59b6 !important; /* Paars */
-        background-color: #f0f0f0 !important;
-    }
-
-    /* Verberg footer "Made with Streamlit" */
+    
+    /* Verberg footer */
     footer {visibility: hidden;}
     
-    /* PUSH CONTENT DOWN (Ruimte voor de navbar) */
+    /* PUSH CONTENT DOWN (Extra ruimte voor de 120px balk) */
     .block-container {
-        padding-top: 140px !important;
+        padding-top: 160px !important; /* Ruimte voor navbar + beetje lucht */
         padding-bottom: 5rem;
     }
     
-    /* --- NAVBAR (Vaste Hoogte) --- */
+    /* --- NAVBAR (OFFICIËLE HOOGTE) --- */
     .navbar {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 100px;
-        z-index: 9999; /* Net onder de header-knop */
+        height: 120px; /* Vaste hoogte, lekker ruim zoals de echte site */
+        z-index: 9999;
         
         background-color: #ffffff;
-        padding: 0px 40px;
+        padding: 0px 50px; /* Iets meer ruimte aan de zijkanten */
         border-bottom: 1px solid #eaeaea;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.03);
         
         display: flex;
         justify-content: space-between;
@@ -82,20 +83,20 @@ st.markdown("""
         box-sizing: border-box;
     }
     
-    /* LOGO */
+    /* LOGO STYLING (GROTER) */
     .nav-logo img {
-        height: 55px;
+        height: 65px; /* Groter logo voor de grotere balk */
         margin-top: 0px;
     }
     
-    /* LINKS */
+    /* LINKS STYLING */
     .nav-links {
-        font-size: 15px;
+        font-size: 16px; /* Iets duidelijker */
         font-weight: 600;
         color: #333;
         display: flex;
-        gap: 30px;
-        margin-left: 50px; /* Beetje ruimte voor de sidebar knop */
+        gap: 40px; /* Meer ruimte tussen de woorden */
+        margin-left: 60px; /* Ruimte voor de menu knop links */
     }
     .nav-links span { cursor: pointer; transition: 0.2s; }
     .nav-links span:hover { color: #9b59b6; }
@@ -103,12 +104,13 @@ st.markdown("""
     .nav-btn {
         background-color: #9b59b6;
         color: white;
-        padding: 12px 28px;
-        border-radius: 25px;
+        padding: 14px 32px; /* Grotere 'Call to Action' knop */
+        border-radius: 30px;
         text-decoration: none;
         font-weight: bold;
-        font-size: 14px;
+        font-size: 15px;
         cursor: pointer;
+        box-shadow: 0 4px 6px rgba(155, 89, 182, 0.2);
     }
     
     /* --- CARD STYLING --- */
@@ -172,7 +174,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- 4. CONTROLS (Sidebar - Nu weer bereikbaar!) ---
+# --- 4. CONTROLS (Sidebar) ---
 with st.sidebar:
     st.header("⚙️ Admin / Demo Controls")
     st.info("Gebruik dit menu om te schakelen tussen de Klant-view en de Planner-view.")
