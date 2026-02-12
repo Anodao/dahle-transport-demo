@@ -19,7 +19,7 @@ if 'step' not in st.session_state:
 if 'temp_order' not in st.session_state:
     st.session_state.temp_order = {}
 
-# --- 3. CSS STYLING (FINAL FIX: Toolbar weg, Menu blijft) ---
+# --- 3. CSS STYLING ---
 st.markdown("""
     <style>
     /* IMPORT FONT (Montserrat) */
@@ -29,51 +29,69 @@ st.markdown("""
         font-family: 'Montserrat', sans-serif;
     }
 
-    /* --- DE OPLOSSING VOOR DE KNOPPEN --- */
+    /* --- DE "ADMIN MENU" KNOP FIX --- */
     
-    /* 1. Verberg SPECIFIEK de toolbar rechtsboven (Share, Star, etc.) */
-    [data-testid="stToolbar"] {
-        display: none !important;
+    /* We stylen de standaard Streamlit 'sidebar toggle' (het pijltje)
+       zodat het lijkt op een opvallende admin knop */
+    
+    [data-testid="stSidebarCollapsedControl"] {
+        position: fixed;
+        left: 20px;
+        top: 20px;
+        z-index: 100001; /* Bovenop alles, ook boven de navbar */
+        
+        background-color: #333;
+        color: white;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        border: 2px solid #ffffff;
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
-    /* 2. Verberg de gekleurde streep bovenin */
-    [data-testid="stDecoration"] {
-        display: none;
+    [data-testid="stSidebarCollapsedControl"]:hover {
+        background-color: #9b59b6; /* Paars bij hover */
+        transform: scale(1.1);
     }
     
-    /* 3. Maak de header container transparant (zodat je onze witte balk ziet) */
-    /* Maar laat hem wel bestaan, zodat de menu-knop (hamburger) erin blijft werken */
-    [data-testid="stHeader"] {
-        background-color: transparent !important;
-        z-index: 10000; /* Zorg dat het menu-knopje bovenop ligt */
+    /* Zorg dat het pijltje binnenin wit is */
+    [data-testid="stSidebarCollapsedControl"] svg {
+        fill: white !important;
+        color: white !important;
     }
 
-    /* 4. Zorg dat het menu-knopje zichtbaar is (donkergrijs) */
-    button[kind="header"] {
-        color: #333 !important;
-        background-color: transparent !important;
-    }
+    /* --- OVERIGE VERBERGEN --- */
     
-    /* Verberg footer */
+    /* Verberg toolbar rechtsboven */
+    [data-testid="stToolbar"] { display: none !important; }
+    /* Verberg decoratie balk */
+    [data-testid="stDecoration"] { display: none; }
+    /* Header transparant maken zodat de knop werkt */
+    [data-testid="stHeader"] { background-color: transparent !important; }
+    /* Footer weg */
     footer {visibility: hidden;}
     
-    /* PUSH CONTENT DOWN (Extra ruimte voor de 120px balk) */
+    /* PUSH CONTENT DOWN */
     .block-container {
-        padding-top: 160px !important; /* Ruimte voor navbar + beetje lucht */
+        padding-top: 160px !important;
         padding-bottom: 5rem;
     }
     
-    /* --- NAVBAR (OFFICIËLE HOOGTE) --- */
+    /* --- NAVBAR --- */
     .navbar {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 120px; /* Vaste hoogte, lekker ruim zoals de echte site */
+        height: 120px;
         z-index: 9999;
         
         background-color: #ffffff;
-        padding: 0px 50px; /* Iets meer ruimte aan de zijkanten */
+        padding: 0px 50px;
         border-bottom: 1px solid #eaeaea;
         box-shadow: 0px 4px 15px rgba(0,0,0,0.03);
         
@@ -83,20 +101,21 @@ st.markdown("""
         box-sizing: border-box;
     }
     
-    /* LOGO STYLING (GROTER) */
+    /* LOGO */
     .nav-logo img {
-        height: 65px; /* Groter logo voor de grotere balk */
+        height: 65px;
         margin-top: 0px;
+        /* Schuif logo iets naar rechts zodat het niet onder de admin knop zit */
+        margin-left: 50px; 
     }
     
-    /* LINKS STYLING */
+    /* LINKS */
     .nav-links {
-        font-size: 16px; /* Iets duidelijker */
+        font-size: 16px;
         font-weight: 600;
         color: #333;
         display: flex;
-        gap: 40px; /* Meer ruimte tussen de woorden */
-        margin-left: 60px; /* Ruimte voor de menu knop links */
+        gap: 40px;
     }
     .nav-links span { cursor: pointer; transition: 0.2s; }
     .nav-links span:hover { color: #9b59b6; }
@@ -104,7 +123,7 @@ st.markdown("""
     .nav-btn {
         background-color: #9b59b6;
         color: white;
-        padding: 14px 32px; /* Grotere 'Call to Action' knop */
+        padding: 14px 32px;
         border-radius: 30px;
         text-decoration: none;
         font-weight: bold;
@@ -176,8 +195,8 @@ st.markdown("""
 
 # --- 4. CONTROLS (Sidebar) ---
 with st.sidebar:
-    st.header("⚙️ Admin / Demo Controls")
-    st.info("Gebruik dit menu om te schakelen tussen de Klant-view en de Planner-view.")
+    st.header("⚙️ Admin Controls")
+    st.info("Klik hieronder om te wisselen tussen de Website en het Planner Systeem.")
     
     mode = st.radio("Kies Scherm:", ["🌐 Customer Website", "🔒 Internal Planner System"])
     
