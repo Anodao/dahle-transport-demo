@@ -8,7 +8,7 @@ st.set_page_config(
     page_title="Dahle Transport", 
     page_icon="🚚", 
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed" # Hij start dicht
 )
 
 # --- 2. SESSION STATE ---
@@ -19,7 +19,7 @@ if 'step' not in st.session_state:
 if 'temp_order' not in st.session_state:
     st.session_state.temp_order = {}
 
-# --- 3. CSS STYLING (Aangepaste Hoogte Navbar) ---
+# --- 3. CSS STYLING (Met Admin Knop Fix) ---
 st.markdown("""
     <style>
     /* IMPORT FONT (Montserrat) */
@@ -29,30 +29,50 @@ st.markdown("""
         font-family: 'Montserrat', sans-serif;
     }
 
-    /* REMOVE DEFAULT ELEMENTS */
-    #MainMenu {visibility: hidden;}
-    header {visibility: hidden;}
-    footer {visibility: hidden;}
-    [data-testid="stHeader"] { display: none; }
-    [data-testid="stToolbar"] { display: none; }
+    /* --- HEADER FIX (Zorgt dat je de sidebar weer kunt openen) --- */
     
-    /* PUSH CONTENT DOWN (Extra ruimte voor de hogere balk) */
+    /* We maken de header transparant in plaats van onzichtbaar */
+    header[data-testid="stHeader"] {
+        background-color: transparent !important;
+        z-index: 100000; /* Zorg dat dit BOVEN de witte navbar ligt */
+    }
+    
+    /* Verberg de gekleurde streep en 'running man' icoontjes */
+    div[data-testid="stDecoration"] { display: none; }
+    div[data-testid="stStatusWidget"] { visibility: hidden; }
+
+    /* Stijl de Sidebar-Toggle knop (pijltje linksboven) */
+    button[kind="header"] {
+        color: #333 !important; /* Donkergrijs */
+        background-color: transparent !important;
+        font-weight: bold;
+    }
+    /* Als je eroverheen muist */
+    button[kind="header"]:hover {
+        color: #9b59b6 !important; /* Paars */
+        background-color: #f0f0f0 !important;
+    }
+
+    /* Verberg footer "Made with Streamlit" */
+    footer {visibility: hidden;}
+    
+    /* PUSH CONTENT DOWN (Ruimte voor de navbar) */
     .block-container {
-        padding-top: 140px !important; /* Verhoogd van 120px naar 140px */
+        padding-top: 140px !important;
         padding-bottom: 5rem;
     }
     
-    /* --- NAVBAR (HOGER GEMAAKT) --- */
+    /* --- NAVBAR (Vaste Hoogte) --- */
     .navbar {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 100px; /* Vaste hoogte ingesteld (was automatisch) */
-        z-index: 9999;
+        height: 100px;
+        z-index: 9999; /* Net onder de header-knop */
         
         background-color: #ffffff;
-        padding: 0px 40px; /* Padding aangepast omdat we nu vaste hoogte hebben */
+        padding: 0px 40px;
         border-bottom: 1px solid #eaeaea;
         box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
         
@@ -62,18 +82,20 @@ st.markdown("""
         box-sizing: border-box;
     }
     
-    /* LOGO STYLING (Iets groter) */
+    /* LOGO */
     .nav-logo img {
-        height: 55px; /* Iets groter gezet (was 50px) */
+        height: 55px;
         margin-top: 0px;
     }
     
+    /* LINKS */
     .nav-links {
-        font-size: 15px; /* Iets groter lettertype */
+        font-size: 15px;
         font-weight: 600;
         color: #333;
         display: flex;
         gap: 30px;
+        margin-left: 50px; /* Beetje ruimte voor de sidebar knop */
     }
     .nav-links span { cursor: pointer; transition: 0.2s; }
     .nav-links span:hover { color: #9b59b6; }
@@ -81,7 +103,7 @@ st.markdown("""
     .nav-btn {
         background-color: #9b59b6;
         color: white;
-        padding: 12px 28px; /* Iets grotere knop */
+        padding: 12px 28px;
         border-radius: 25px;
         text-decoration: none;
         font-weight: bold;
@@ -150,10 +172,13 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- 4. CONTROLS (Sidebar) ---
+# --- 4. CONTROLS (Sidebar - Nu weer bereikbaar!) ---
 with st.sidebar:
-    st.header("⚙️ Demo Controls")
-    mode = st.radio("View Mode:", ["🌐 Customer Website", "🔒 Internal Planner System"])
+    st.header("⚙️ Admin / Demo Controls")
+    st.info("Gebruik dit menu om te schakelen tussen de Klant-view en de Planner-view.")
+    
+    mode = st.radio("Kies Scherm:", ["🌐 Customer Website", "🔒 Internal Planner System"])
+    
     st.divider()
     if st.button("Reset Demo Data"):
         st.session_state.orders = []
