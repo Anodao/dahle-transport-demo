@@ -19,7 +19,7 @@ if 'step' not in st.session_state:
 if 'temp_order' not in st.session_state:
     st.session_state.temp_order = {}
 
-# --- 3. CSS STYLING (Professional & Clean) ---
+# --- 3. CSS STYLING (White Navbar + Equal Cards) ---
 st.markdown("""
     <style>
     /* IMPORT FONT (Montserrat) */
@@ -36,17 +36,19 @@ st.markdown("""
     [data-testid="stHeader"] { display: none; }
     [data-testid="stToolbar"] { display: none; }
     
+    /* REMOVE PADDING TO FLUSH NAVBAR */
     .block-container {
         padding-top: 0rem !important;
         padding-bottom: 5rem;
     }
     
-    /* NAVBAR */
+    /* --- NAVBAR STYLE (WHITE VERSION) --- */
     .navbar {
-        background-color: #1a1a1a;
+        background-color: #ffffff; /* Wit */
         padding: 15px 40px;
-        border-bottom: 1px solid #333;
-        margin-bottom: 60px; /* Space below navbar */
+        border-bottom: 1px solid #eaeaea;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.05); /* Subtiele schaduw */
+        margin-bottom: 60px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -54,15 +56,15 @@ st.markdown("""
     .nav-logo {
         font-size: 24px;
         font-weight: 800;
-        color: white;
+        color: #1a1a1a; /* Donkere tekst */
         text-transform: italic;
     }
-    .nav-logo span { color: #9b59b6; }
+    .nav-logo span { color: #9b59b6; } /* Paars logo icoon */
     
     .nav-links {
         font-size: 14px;
         font-weight: 600;
-        color: #ddd;
+        color: #333; /* Donkere link tekst */
         display: flex;
         gap: 30px;
     }
@@ -79,8 +81,8 @@ st.markdown("""
         font-size: 14px;
         cursor: pointer;
     }
-
-    /* CARD STYLING */
+    
+    /* --- CARD STYLING (FIXED HEIGHT) --- */
     .option-card {
         background-color: #262626;
         border: 2px solid #333;
@@ -88,10 +90,13 @@ st.markdown("""
         padding: 40px 20px;
         text-align: center;
         transition: 0.3s;
-        height: 100%;
+        
+        /* THE FIX: Forceer minimale hoogte zodat ze gelijk zijn */
+        min-height: 280px; 
+        
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start; /* Start content bovenaan */
         align-items: center;
     }
     .option-card:hover {
@@ -99,9 +104,9 @@ st.markdown("""
         background-color: #2e2e2e;
         transform: translateY(-5px);
     }
-    .card-icon { font-size: 50px; margin-bottom: 20px; }
-    .card-title { font-size: 20px; font-weight: 700; color: white; margin-bottom: 10px; }
-    .card-desc { font-size: 14px; color: #aaa; line-height: 1.5; }
+    .card-icon { font-size: 50px; margin-bottom: 20px; margin-top: 10px; }
+    .card-title { font-size: 20px; font-weight: 700; color: white; margin-bottom: 15px; }
+    .card-desc { font-size: 14px; color: #aaa; line-height: 1.6; }
 
     /* BUTTONS */
     div.stButton > button {
@@ -112,6 +117,7 @@ st.markdown("""
         font-weight: 700;
         border: none;
         width: 100%;
+        margin-top: 10px;
     }
     div.stButton > button:hover {
         background-color: #af6bca;
@@ -123,8 +129,6 @@ st.markdown("""
     div[data-baseweb="input"] input { color: white; }
     label { color: #ccc !important; font-weight: 600; margin-bottom: 5px; }
     
-    /* CENTER TEXT UTILITY */
-    .center-text { text-align: center; }
     </style>
     
     <div class="navbar">
@@ -156,12 +160,11 @@ with st.sidebar:
 if mode == "🌐 Customer Website":
     
     # We create 3 columns: Empty | Content | Empty
-    # This forces the content to be centered in the middle column
     col_spacer_L, col_main, col_spacer_R = st.columns([1, 3, 1])
     
     with col_main:
         
-        # --- HEADER (Simple) ---
+        # --- HEADER ---
         st.markdown("<h2 style='text-align: center; margin-bottom: 40px;'>📦 Create new shipment</h2>", unsafe_allow_html=True)
         
         # --- WIZARD STEP 1: SELECT TYPE ---
@@ -177,16 +180,16 @@ if mode == "🌐 Customer Website":
                 <div class="option-card">
                     <div class="card-icon">📦</div>
                     <div class="card-title">Parcels & Docs</div>
-                    <div class="card-desc">Small boxes and urgent documents up to 30kg.</div>
+                    <div class="card-desc">Small boxes, envelopes, and urgent documents up to 30kg.</div>
                 </div>
                 """, unsafe_allow_html=True)
-                st.write("")
                 if st.button("Select Parcels"):
                     st.session_state.selected_type = "Parcels/Docs"
                     st.session_state.step = 2
                     st.rerun()
 
             with c_card2:
+                # Omdat deze tekst langer is, zal hij nu niet meer de layout breken door de min-height
                 st.markdown("""
                 <div class="option-card">
                     <div class="card-icon">🚛</div>
@@ -194,7 +197,6 @@ if mode == "🌐 Customer Website":
                     <div class="card-desc">Euro pallets, industrial goods, and bulk cargo over 30kg.</div>
                 </div>
                 """, unsafe_allow_html=True)
-                st.write("")
                 if st.button("Select Freight"):
                     st.session_state.selected_type = "Freight/Pallets"
                     st.session_state.step = 2
@@ -208,7 +210,6 @@ if mode == "🌐 Customer Website":
                     <div class="card-desc">Refrigerated, hazardous (ADR), or oversized loads.</div>
                 </div>
                 """, unsafe_allow_html=True)
-                st.write("")
                 if st.button("Select Special"):
                     st.session_state.selected_type = "Special Transport"
                     st.session_state.step = 2
@@ -292,7 +293,7 @@ if mode == "🌐 Customer Website":
                     st.rerun()
 
 # =========================================================
-# VIEW 2: INTERNAL PLANNER (Not Centered / Full Width)
+# VIEW 2: INTERNAL PLANNER (Full Width)
 # =========================================================
 elif mode == "🔒 Internal Planner System":
     st.title("🔒 Planner Dashboard")
